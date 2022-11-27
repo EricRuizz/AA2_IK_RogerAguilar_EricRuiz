@@ -36,3 +36,21 @@ E:\Trabajo\Classes Enti\Practicas2019-20\delivery2-2019-20\MyOctopusLibrary\Octo
 E:\Trabajo\Classes Enti\Practicas2019-20\delivery2-2019-20\MyOctopusLibrary\OctopusController\OctopusController\obj\Debug\OctopusController.csproj.CopyComplete
 E:\Trabajo\Classes Enti\Practicas2019-20\delivery2-2019-20\MyOctopusLibrary\OctopusController\OctopusController\obj\Debug\OctopusController.dll
 E:\Trabajo\Classes Enti\Practicas2019-20\delivery2-2019-20\MyOctopusLibrary\OctopusController\OctopusController\obj\Debug\OctopusController.pdb
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\OctopusController.dll
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\OctopusController.pdb
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\Unity.Cecil.dll
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\Unity.SerializationLogic.dll
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\Unity.DataContract.dll
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\ExCSS.Unity.dll
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\Unity.Legacy.NRefactory.dll
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\Unity.UNetWeaver.dll
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\Unity.CecilTools.dll
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\Unity.Cecil.Pdb.dll
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\Unity.Cecil.Mdb.dll
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\UnityEditor.xml
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\bin\Debug\UnityEngine.xml
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\obj\Debug\OctopusController.csproj.AssemblyReference.cache
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\obj\Debug\OctopusController.csproj.CoreCompileInputs.cache
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\obj\Debug\OctopusController.csproj.CopyComplete
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\obj\Debug\OctopusController.dll
+C:\Users\ericr\OneDrive\Documentos\Projects\FDMIA\AA2_IK_RogerAguilar_EricRuiz\AA2_IK_RogerAguilar_EricRuiz\OctopusController\obj\Debug\OctopusController.pdb
