@@ -10,7 +10,7 @@ using UnityEngine;
 namespace OctopusController
 {
 
-    
+
     internal class MyTentacleController
 
     //MAINTAIN THIS CLASS AS INTERNAL
@@ -22,24 +22,57 @@ namespace OctopusController
 
         public Transform[] Bones { get => _bones; }
 
+
+
         //Exercise 1.
         public Transform[] LoadTentacleJoints(Transform root, TentacleMode mode)
         {
-            //TODO: add here whatever is needed to find the bones forming the tentacle for all modes
-            //you may want to use a list, and then convert it to an array and save it into _bones
             tentacleMode = mode;
+            Transform transform = root;
 
-            switch (tentacleMode){
+            List<Transform> _tempBones = new List<Transform>();
+            switch (tentacleMode)
+            {
                 case TentacleMode.LEG:
-                    //TODO: in _endEffectorsphere you keep a reference to the base of the leg
+                    {
+                        transform = transform.GetChild(0);
+                        _tempBones.Add(transform);
+
+                        while (transform.childCount != 0)
+                        {
+                            transform = transform.GetChild(1);
+                            _tempBones.Add(transform);
+                        }
+                        _bones = _tempBones.ToArray();
+                        _endEffectorSphere = transform;
+                    }
                     break;
                 case TentacleMode.TAIL:
-                    //TODO: in _endEffectorsphere you keep a reference to the red sphere 
+                    {
+                        _tempBones.Add(transform);
+                        while (transform.childCount != 0)
+                        {
+                            transform = transform.GetChild(1);
+                            _tempBones.Add(transform);
+                        }
+                        _bones = _tempBones.ToArray();
+                        _endEffectorSphere = transform;
+                    }
                     break;
                 case TentacleMode.TENTACLE:
-                    //TODO: in _endEffectorphere you  keep a reference to the sphere with a collider attached to the endEffector
+                    {
+                        transform = transform.GetChild(0);
+                        while (transform.childCount != 0)
+                        {
+                            transform = transform.GetChild(0);
+                            _tempBones.Add(transform);
+                        }
+                        _bones = _tempBones.ToArray();
+                        _endEffectorSphere = transform;
+                    }
                     break;
             }
+
             return Bones;
         }
     }
