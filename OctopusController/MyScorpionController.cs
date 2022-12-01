@@ -105,7 +105,7 @@ namespace OctopusController
             {
                 if (i == 0)
                 {
-                    axis[i] = Vector3.forward;
+                    axis[i] = Vector3.up;
                     tailSolutions[i] = _tail.Bones[i].localRotation.eulerAngles.y;
                 }
                 else
@@ -318,12 +318,12 @@ namespace OctopusController
         private Vector3 ForwardKinematics(float[] solutions)
         {
             Vector3 prevPoint = _tail.Bones[0].position;
-            Quaternion rotation = _tail.Bones[0].rotation;
+            Quaternion rotation = _tail.Bones[0].parent.rotation;
 
             for (int i = 1; i < _tail.Bones.Length; i++)
             {
-                rotation *= Quaternion.AngleAxis(solutions[i - 1], axis[i]);
-                Vector3 nextPoint = prevPoint + rotation * startOffsets[i];
+                rotation *= Quaternion.AngleAxis(solutions[i - 1], axis[i - 1]);
+                Vector3 nextPoint = prevPoint + rotation * startOffsets[i-1];
                 Debug.DrawLine(prevPoint, nextPoint);
                 prevPoint = nextPoint;
             }
