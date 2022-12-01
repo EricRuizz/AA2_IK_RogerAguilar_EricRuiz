@@ -170,8 +170,11 @@ namespace OctopusController
                             theta = theta % Math.PI;
                             theta *= sin > 0 ? 1 : -1;
 
-                            _tentacles[i].Bones[j].rotation *= Quaternion.AngleAxis((float)theta * Mathf.Rad2Deg, axis);
-                            _tentacles[i].Bones[j].Rotate(axis, (float)theta * Mathf.Rad2Deg, Space.World);
+                            if(theta > 0.01f)
+                            {
+                                _tentacles[i].Bones[j].rotation *= Quaternion.AngleAxis((float)theta * Mathf.Rad2Deg, axis);
+                                _tentacles[i].Bones[j].Rotate(axis, (float)theta * Mathf.Rad2Deg, Space.World);
+                            }
                         }
 
                         tries[i]++;
