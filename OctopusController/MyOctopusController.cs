@@ -46,11 +46,7 @@ namespace OctopusController
 
         public void TestLogging(string objectName)
         {
-
-
             Debug.Log("hello, I am initializing my Octopus Controller in object " + objectName);
-
-
         }
 
         public void Init(Transform[] tentacleRoots, Transform[] randomTargets)
@@ -76,7 +72,6 @@ namespace OctopusController
 
             _randomTargets = randomTargets;
             //TODO: use the regions however you need to make sure each tentacle stays in its region
-
         }
 
 
@@ -175,6 +170,8 @@ namespace OctopusController
                                 _tentacles[i].Bones[j].rotation *= Quaternion.AngleAxis((float)theta * Mathf.Rad2Deg, axis);
                                 _tentacles[i].Bones[j].Rotate(axis, (float)theta * Mathf.Rad2Deg, Space.World);
                             }
+
+                            _tentacles[i].Bones[j].localRotation = GetSwing(_tentacles[i].Bones[j].localRotation);
                         }
 
                         tries[i]++;
@@ -201,14 +198,42 @@ namespace OctopusController
         }
 
 
+        public static Quaternion GetTwist(Quaternion rot)
+        {
+            //todo: change the return value for exercise 3
+            return GetSwing(rot) * CalculateTwist(rot);
+        }
+
+        private static Quaternion CalculateTwist(Quaternion rot)
+        {
+            Quaternion qt;
+            qt.x = 0;
+            qt.y = rot.y;
+            qt.z = 0;
+            qt.w = rot.w;
+            return qt.normalized;
+        }
+        public static Quaternion GetSwing(Quaternion rot)
+        {
+            //todo: change the return value for exercise 3
+            //return totalRotation * (rot * Quaternion.Inverse(CalculateTwist(rot)));
+
+            Quaternion invertedRotation = new Quaternion(0f, rot.y, 0f, rot.w); // twist is in the Y axis
+
+            //clamp??
+            invertedRotation.x = invertedRotation.x * (float)(1 / Math.Sqrt(Math.Pow(rot.w, 2) + Math.Pow(rot.y, 2)));
+            invertedRotation.y = invertedRotation.y * (float)(1 / Math.Sqrt(Math.Pow(rot.w, 2) + Math.Pow(rot.y, 2)));
+            invertedRotation.z = invertedRotation.z * (float)(1 / Math.Sqrt(Math.Pow(rot.w, 2) + Math.Pow(rot.y, 2)));
+            invertedRotation.w = invertedRotation.w * (float)(1 / Math.Sqrt(Math.Pow(rot.w, 2) + Math.Pow(rot.y, 2)));
+
+            invertedRotation = Quaternion.Inverse(invertedRotation);
+
+            Quaternion qSwing = rot * invertedRotation;
+
+            return qSwing;
+        }
 
 
         #endregion
-
-
-
-
-
-
     }
 }

@@ -1105,10 +1105,10 @@ MonoBehaviour:
   - {fileID: 1256047035}
   - {fileID: 1946850105}
   - {fileID: 1120208754}
-  _twistMin: 0
-  _twistMax: 0
-  _swingMin: 0
-  _swingMax: 0
+  _twistMin: 360
+  _twistMax: 360
+  _swingMin: 360
+  _swingMax: 360
   _updateTwistSwingLimits: 1
 --- !u!1 &319744859
 GameObject:
