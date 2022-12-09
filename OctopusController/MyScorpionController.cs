@@ -115,18 +115,11 @@ namespace OctopusController
                 }
 
                 //startOffsets[i] = _tail.Bones[i].localPosition;
-
-                Debug.Log(tailSolutions[i]);
             }
 
             for (int i = 0; i < _tail.Bones.Length - 1; i++)
             {
                 startOffsets[i] = Quaternion.Inverse(_tail.Bones[i].rotation) * (_tail.Bones[i + 1].position - _tail.Bones[i].position);
-            }
-
-            for (int i = 0; i < _tail.Bones.Length; i++)
-            {
-                Debug.Log(startOffsets[i]);
             }
         }
 
@@ -265,7 +258,6 @@ namespace OctopusController
                     {
                         _legs[i].Bones[0].position = lerpInitPos[i] + ((lerpFinalPos[i] - lerpInitPos[i]) * (legLerpTParam[i]));
                         legLerpTParam[i] = legLerpTParam[i] + (Time.deltaTime * 10.0f);
-                        Debug.Log(legLerpTParam[i]);
                     }
                 }
             }
@@ -324,7 +316,7 @@ namespace OctopusController
             {
                 rotation *= Quaternion.AngleAxis(solutions[i - 1], axis[i - 1]);
                 Vector3 nextPoint = prevPoint + rotation * startOffsets[i-1];
-                Debug.DrawLine(prevPoint, nextPoint);
+                //Debug.DrawLine(prevPoint, nextPoint);
                 prevPoint = nextPoint;
             }
 
