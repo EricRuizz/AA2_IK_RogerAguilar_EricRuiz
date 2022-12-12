@@ -16,6 +16,7 @@ public class IK_tentacles : MonoBehaviour
 
     [SerializeField]
     TargetFollower _targetFollower;
+    Transform _notifyTarget;
 
 
     MyOctopusController _myController = new MyOctopusController();
@@ -51,13 +52,14 @@ public class IK_tentacles : MonoBehaviour
 
     public void NotifyTarget(Transform target, Transform region)
     {
-        _myController.NotifyTarget(_targetFollower.transform, region);
-        _targetFollower.StartFollowingTarget(target);
+        _notifyTarget = target;
+        _myController.NotifyTarget(_targetFollower.transform, target);
     }
 
     public void NotifyShoot()
     {
         _myController.NotifyShoot();
+        _targetFollower.StartFollowingTarget(_notifyTarget);
     }
 
 

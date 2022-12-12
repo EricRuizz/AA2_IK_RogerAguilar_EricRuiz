@@ -10,7 +10,7 @@ public class TargetFollower : MonoBehaviour
 
     void Start()
     {
-        speed = 10.0f;
+        speed = 20.0f;
         followTarget = false;
     }
 
@@ -24,7 +24,7 @@ public class TargetFollower : MonoBehaviour
     {
         if(followTarget)
         {
-            transform.position = (target.position - transform.position).normalized * speed * Time.deltaTime;
+            transform.position += (target.position - transform.position).normalized * speed * Time.deltaTime;
 
             if ((target.position - transform.position).magnitude <= 0.5f)
             {

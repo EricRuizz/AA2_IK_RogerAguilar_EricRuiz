@@ -75,7 +75,7 @@ namespace OctopusController
         }
 
 
-        public void NotifyTarget(Transform target, Transform region)
+        public void NotifyTarget(Transform target, Transform region) //region as targets final position
         {
             _currentRegion = region;
             _target = target;
@@ -85,7 +85,7 @@ namespace OctopusController
                 float lastDistance = 0.0f;
                 for (int i = 0; i < _tentacles.Length; i++)
                 {
-                    if ((target.position - _tentacles[i].Bones[_tentacles[i].Bones.Length - 1].position).magnitude > lastDistance)
+                    if ((region.position - _tentacles[i].Bones[_tentacles[i].Bones.Length - 1].position).magnitude < lastDistance)
                     {
                         closestTentacle = i;
                     }
