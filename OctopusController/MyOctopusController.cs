@@ -218,6 +218,8 @@ namespace OctopusController
             //todo: change the return value for exercise 3
             //return totalRotation * (rot * Quaternion.Inverse(CalculateTwist(rot)));
 
+            rot = new Quaternion(rot.x, Mathf.Clamp(rot.y, 0.0f, 1.0f), Mathf.Clamp(rot.z, 0.0f, 10.0f), rot.w);
+
             Quaternion invertedRotation = new Quaternion(0f, rot.y, 0f, rot.w).normalized; // twist is in the Y axis
 
             invertedRotation = Quaternion.Inverse(invertedRotation);
@@ -228,7 +230,7 @@ namespace OctopusController
             float angle;
             Vector3 axis;
             qSwing.ToAngleAxis(out angle, out axis);
-            Debug.Log(_swingMax);
+
             return Quaternion.AngleAxis(Mathf.Clamp(angle, 0.0f, _swingMax), axis);
         }
 
