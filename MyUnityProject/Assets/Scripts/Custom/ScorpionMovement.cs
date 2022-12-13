@@ -8,6 +8,8 @@ public class ScorpionMovement : MonoBehaviour
     [SerializeField] private Transform body;
     [SerializeField] private float speed;
 
+    [HideInInspector] public bool moved;
+
     void Update()
     {
         Vector3 moveVector = Vector3.zero;
@@ -29,6 +31,10 @@ public class ScorpionMovement : MonoBehaviour
             moveVector += Vector3.left;
         }
 
-        body.position += moveVector.normalized * speed * Time.deltaTime;
+        if(moveVector != Vector3.zero)
+        {
+            body.position += moveVector.normalized * speed * Time.deltaTime;
+            moved = true;
+        }
     }
 }

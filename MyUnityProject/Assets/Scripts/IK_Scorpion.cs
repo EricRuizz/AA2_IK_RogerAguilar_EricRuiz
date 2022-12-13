@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using OctopusController;
 using Unity.Profiling;
+using UnityEngine.UIElements;
 
 public class IK_Scorpion : MonoBehaviour
 {
     MyScorpionController _myController= new MyScorpionController();
 
     public IK_tentacles _myOctopus;
+
+    //////
+    public ScorpionMovement scorpionMovement;
+    //////
 
     [Header("Body")]
     float animTime;
@@ -76,8 +81,14 @@ public class IK_Scorpion : MonoBehaviour
         animPlaying = true;
 
         ////////
-        UpdateFutureLegBases();
-        UpdateBodyPosition();
+        if(scorpionMovement.moved)
+        {
+            UpdateFutureLegBases();
+            UpdateBodyPosition();
+            UpdateBodyRotation();
+
+            scorpionMovement.moved = false;
+        }
         ////////
 
         _myController.UpdateIK();
@@ -134,12 +145,27 @@ public class IK_Scorpion : MonoBehaviour
         Body.transform.position = new Vector3(bPos.x, bodyInitHeight + heightDiff, bPos.z);
     }
 
+    private void UpdateBodyRotation()
+    {
+        //get the planes
+        Vector3 n1 = CalculateNormal(futureLegBases[2], futureLegBases[1], futureLegBases[0]);
+        Vector3 n2 = CalculateNormal(futureLegBases[3], futureLegBases[4], futureLegBases[5]);
+
+        Vector3 newNormal = (n1 + n2) / 2.0f;
+
+        Body.transform.up = newNormal;
+    }
+
+    private Vector3 CalculateNormal(Transform t0, Transform t1, Transform t2)
+    {
+        return Vector3.Cross((t1.position - t0.position), (t2.position - t0.position));
+    }
+
     private void OnDrawGizmos()
     {
         for (int i = 0; i < futureLegBases.Length; i++)
         {
             Gizmos.DrawSphere(futureLegBases[i].transform.position, 0.1f);
-
         }
     }
 }
