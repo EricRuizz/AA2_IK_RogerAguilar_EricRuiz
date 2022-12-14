@@ -257,7 +257,9 @@ namespace OctopusController
                     else
                     {
                         _legs[i].Bones[0].position = lerpInitPos[i] + ((lerpFinalPos[i] - lerpInitPos[i]) * (legLerpTParam[i]));
-                        legLerpTParam[i] = legLerpTParam[i] + (Time.deltaTime * 10.0f);
+                        _legs[i].Bones[0].position += Vector3.up * Mathf.Pow(Mathf.Sin(legLerpTParam[i] * Mathf.PI), 2.0f) * 0.5f;
+
+                        legLerpTParam[i] = legLerpTParam[i] + (Time.deltaTime * 7.5f);
                     }
                 }
             }
