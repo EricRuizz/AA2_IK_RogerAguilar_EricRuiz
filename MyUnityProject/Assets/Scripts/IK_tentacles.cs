@@ -14,6 +14,10 @@ public class IK_tentacles : MonoBehaviour
     [SerializeField]
     Transform[] _randomTargets;
 
+    [SerializeField]
+    TargetFollower _targetFollower;
+    Transform _notifyTarget;
+
 
     MyOctopusController _myController = new MyOctopusController();
     
@@ -48,13 +52,14 @@ public class IK_tentacles : MonoBehaviour
 
     public void NotifyTarget(Transform target, Transform region)
     {
-        _myController.NotifyTarget(target, region);
-
+        _notifyTarget = target;
+        _myController.NotifyTarget(_targetFollower.transform, target);
     }
 
     public void NotifyShoot()
     {
         _myController.NotifyShoot();
+        _targetFollower.StartFollowingTarget(_notifyTarget);
     }
 
 
@@ -66,6 +71,7 @@ public class IK_tentacles : MonoBehaviour
     {
         
         _myController.TestLogging(gameObject.name);
+        //TODO Tentacles with lerp
         _myController.Init(_tentacles, _randomTargets);
 
         _myController.TwistMax = _twistMax;

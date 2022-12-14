@@ -117,7 +117,6 @@ public class IK_Scorpion : MonoBehaviour
             if (Physics.Raycast(raycastFutureLegBases[i].position, Vector3.down, out hit, 10.0f))
             {
                 futureLegBases[i].transform.position = hit.point;
-                Debug.Log(hit.transform.name);
             }
         }
     }
