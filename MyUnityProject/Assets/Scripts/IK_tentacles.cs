@@ -20,8 +20,11 @@ public class IK_tentacles : MonoBehaviour
 
 
     MyOctopusController _myController = new MyOctopusController();
-    
 
+
+    //
+    private bool stopBall;
+    //
 
     [Header("Exercise 3")]
     [SerializeField, Range(0, 360)]
@@ -58,8 +61,13 @@ public class IK_tentacles : MonoBehaviour
 
     public void NotifyShoot()
     {
-        _myController.NotifyShoot();
-        _targetFollower.StartFollowingTarget(_notifyTarget);
+        if(stopBall)
+        {
+            _myController.NotifyShoot();
+            _targetFollower.StartFollowingTarget(_notifyTarget);
+        }
+
+        stopBall = !stopBall;
     }
 
 
@@ -79,6 +87,7 @@ public class IK_tentacles : MonoBehaviour
         _myController.SwingMax = _swingMax;
         _myController.SwingMin = _swingMin;
 
+        stopBall = true;
     }
 
 
