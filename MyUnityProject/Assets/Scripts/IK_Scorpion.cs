@@ -4,6 +4,7 @@ using UnityEngine;
 using OctopusController;
 using Unity.Profiling;
 using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class IK_Scorpion : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class IK_Scorpion : MonoBehaviour
 
     //////
     public ScorpionMovement scorpionMovement;
+
+    [SerializeField] public GameObject magnusEffectSlider;
+    [SerializeField] public GameObject strengthSlider;
     //////
 
     [Header("Body")]
@@ -93,11 +97,13 @@ public class IK_Scorpion : MonoBehaviour
 
         _myController.UpdateIK();
     }
-    
+
+
     //Function to send the tail target transform to the dll
     public void NotifyTailTarget()
     {
         _myController.NotifyTailTarget(tailTarget);
+        _myController.UpdateSliderValues(magnusEffectSlider.GetComponent<UnityEngine.UI.Slider>().value, strengthSlider.GetComponent<UnityEngine.UI.Slider>().value);
     }
 
     //Trigger Function to start the walk animation

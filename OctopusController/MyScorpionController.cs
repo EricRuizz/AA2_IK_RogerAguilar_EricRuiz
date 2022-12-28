@@ -25,6 +25,9 @@ namespace OctopusController
 
         Vector3[] axis;
         Vector3[] startOffsets;
+
+        float magnusEffectDir;
+        float shootingStrength;
         //////
 
         //LEGS
@@ -52,12 +55,15 @@ namespace OctopusController
             legTargets = LegTargets;
             legFutureBases = LegFutureBases;
 
-            maxLegDistance = 1.0f;
+            maxLegDistance = 0.75f;
 
             moveLeg = new bool[LegRoots.Length];
             legLerpTParam = new float[LegRoots.Length];
             lerpInitPos = new Vector3[LegRoots.Length];
             lerpFinalPos = new Vector3[LegRoots.Length];
+
+            magnusEffectDir = 0.0f;
+            shootingStrength = 0.0f;
 
             //Legs init
             for (int i = 0; i < LegRoots.Length; i++)
@@ -129,6 +135,12 @@ namespace OctopusController
             tailTarget = target;
         }
 
+        public void UpdateSliderValues(float magnusEffect, float strength)
+        {
+            magnusEffectDir = magnusEffect;
+            shootingStrength = strength;
+        }
+
         //TODO: Notifies the start of the walking animation
         public void NotifyStartWalk()
         {
@@ -139,7 +151,7 @@ namespace OctopusController
 
         public void UpdateIK()
         {
-            if (DistanceFromTarget(tailTarget.position, tailSolutions) < 5.0f)
+            if (DistanceFromTarget(tailTarget.position, tailSolutions) < 1.0f)
             {
                 updateTail();
             }
@@ -271,7 +283,7 @@ namespace OctopusController
         {
             if (DistanceFromTarget(tailTarget.position, tailSolutions) > stopThreshold)
             {
-                ApproachTarget(tailTarget.position);
+                ApproachTarget(new Vector3((magnusEffectDir * -0.5f), 0.0f, 0.0f) + tailTarget.position);
             }
         }
 
@@ -281,7 +293,7 @@ namespace OctopusController
             {
                 float gradient = CalculateGradient(target, tailSolutions, i, learningRate);
                 //tailSolutions[i] = tailSolutions[i] - gradient;
-                tailSolutions[i] -= 10.0f * gradient;
+                tailSolutions[i] -= 100.0f * shootingStrength * gradient;
                 _tail.Bones[i].localRotation = Quaternion.Euler(tailSolutions[i] * axis[i]);
                 //_tail.Bones[i].Rotate(axis[i] * tailSolutions[i]);
 
