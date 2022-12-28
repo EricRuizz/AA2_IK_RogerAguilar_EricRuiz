@@ -41,6 +41,9 @@ public class IK_Scorpion : MonoBehaviour
     float bodyInitHeight;
 
     float averageLegHeight;
+
+    bool pressingStrenght;
+    bool strenghtGoingUp;
     ////////
 
     // Start is called before the first frame update
@@ -52,12 +55,53 @@ public class IK_Scorpion : MonoBehaviour
         ////////
         averageLegHeight = ComputeLegAverageHeight();
         SetInitPositions();
+
+        pressingStrenght = false;
+        strenghtGoingUp = true;
         ////////
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKey(KeyCode.Z))
+        {
+            magnusEffectSlider.GetComponent<UnityEngine.UI.Slider>().value -= Time.deltaTime * 2.0f;
+        }
+        else if(Input.GetKey(KeyCode.X))
+        {
+            magnusEffectSlider.GetComponent<UnityEngine.UI.Slider>().value += Time.deltaTime * 2.0f;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            pressingStrenght = true;
+        }
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
+            pressingStrenght = false;
+        }
+
+        if(pressingStrenght)
+        {
+            if(strenghtGoingUp)
+            {
+                strengthSlider.GetComponent<UnityEngine.UI.Slider>().value += Time.deltaTime;
+                if(strengthSlider.GetComponent<UnityEngine.UI.Slider>().value >= strengthSlider.GetComponent<UnityEngine.UI.Slider>().maxValue)
+                {
+                    strenghtGoingUp = false;
+                }
+            }
+            else
+            {
+                strengthSlider.GetComponent<UnityEngine.UI.Slider>().value -= Time.deltaTime;
+                if (strengthSlider.GetComponent<UnityEngine.UI.Slider>().value <= strengthSlider.GetComponent<UnityEngine.UI.Slider>().minValue)
+                {
+                    strenghtGoingUp = true;
+                }
+            }
+        }
+
         //if (animPlaying)
         //    animTime += Time.deltaTime;
 
