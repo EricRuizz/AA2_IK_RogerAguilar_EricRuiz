@@ -20,6 +20,8 @@ public class Reseti : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.R))
         {
+            ball.GetComponent<MovingBall>().ballShot = false;
+
             ball.position = ballPos;
             scorpion.position = scorpionPos;
         }
