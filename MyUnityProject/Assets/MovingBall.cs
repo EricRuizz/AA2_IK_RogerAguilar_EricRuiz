@@ -1,11 +1,20 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Purchasing.Security;
+using UnityEngine.Scripting.APIUpdating;
 using UnityEngine.UI;
 
 public class MovingBall : MonoBehaviour
 {
+    public class MovementData
+    {
+        public Vector3 velocity;
+        public Vector3 angularVel;
+    }
+
     [SerializeField]
     IK_tentacles _myOctopus;
     [SerializeField]
@@ -28,8 +37,14 @@ public class MovingBall : MonoBehaviour
 
     [SerializeField] Text rotationVelocityText;
 
+    [SerializeField] Transform blueTrajectory;
+    [SerializeField] Transform greyTrajectory;
+    [SerializeField] Transform scorpionEndEffector;
+
     Vector3 velocity;
     Vector3 acceleration;
+
+    Vector3 gravity;
 
     Vector3 startingVelocity;
     Vector3 impactVect;
@@ -37,12 +52,25 @@ public class MovingBall : MonoBehaviour
     Vector3 angularVelocity;
 
     float airDensity;
+    float freeStream;
+
+    int steps;
+    bool showInfo;
     //
 
     // Start is called before the first frame update
     void Start()
     {
-        airDensity = 0.1f;
+        airDensity = 1.09f;
+        freeStream = 1.0f;
+        gravity = Vector3.down * 9.8f;
+
+        steps = 20;
+        showInfo = true;
+        ballShot = false;
+
+        blueTrajectory.transform.position = transform.position;
+        greyTrajectory.transform.position = transform.position;
     }
 
     // Update is called once per frame
@@ -60,29 +88,115 @@ public class MovingBall : MonoBehaviour
         
         if (ballShot)
         {
-            //var direction = Vector3.Cross(angularVelocity, velocity);
-            //var magnitude = 4.0f / 3f * Mathf.PI * airDensity * Mathf.Pow(_sphereCollider.radius, 3);
-            //rb.AddForce(magnitude * direction);
+            Vector3 magnusForce = CalculateMagnusForce(angularVelocity);
 
-            acceleration = velocity * 0.9f;
-            velocity = acceleration * Time.deltaTime * 250.0f;
             transform.position += velocity * Time.deltaTime;
-            //acceleration = Vector3.down * (2f) + (magnitude * direction);
+            velocity += acceleration * Time.deltaTime;
+            acceleration = gravity + magnusForce;
         }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            showInfo = !showInfo;
+
+            if(showInfo)
+            {
+                blueTrajectory.transform.position = transform.position;
+                greyTrajectory.transform.position = transform.position;
+
+                blueTrajectory.gameObject.SetActive(true);
+                greyTrajectory.gameObject.SetActive(true);
+            }
+            else
+            {
+                blueTrajectory.gameObject.SetActive(false);
+                greyTrajectory.gameObject.SetActive(false);
+            }
+        }
+
+        if(showInfo && !ballShot)
+        {
+            showInfo = false;
+            StartCoroutine(ComputeTrajectory());
+        }
+    }
+
+    IEnumerator ComputeTrajectory()
+    {
+        blueTrajectory.gameObject.SetActive(true);
+        greyTrajectory.gameObject.SetActive(true);
+
+        float totalTime = 0.35f / strength.value;
+        float stepTime = totalTime / steps;
+
+        Vector3 simBlueVelocity = Vector3.zero;
+        Vector3 simBlueAcceleration = Vector3.zero;
+        Vector3 contactPoint = (scorpionEndEffector.position - transform.position).normalized * transform.gameObject.GetComponent<SphereCollider>().radius;
+        Vector3 simBlueAngularVel = Vector3.zero;
+
+        MovementData data = CalculateVariables(contactPoint, greyTrajectory);
+        simBlueVelocity = data.velocity;
+        simBlueAngularVel = data.angularVel;
+
+        Debug.Log(" AAA       " + data.velocity);
+        Debug.Log(" VVV       " + simBlueVelocity);
+
+        Vector3 simGreyVelocity = simBlueVelocity;
+        Vector3 simGreyAcceleration = Vector3.zero;
+
+        for (int i = 0; i < steps; i++)
+        {
+            greyTrajectory.position += simGreyVelocity * stepTime;
+            simGreyVelocity += simGreyAcceleration * stepTime;
+            simGreyAcceleration = gravity;
+
+            blueTrajectory.position += simBlueVelocity * stepTime;
+            simBlueVelocity += simBlueAcceleration * stepTime;
+            simBlueAcceleration = gravity + CalculateMagnusForce(simBlueAngularVel);
+            yield return null;
+
+        }
+
+        yield return new WaitForSeconds(0.7f);
+
+        blueTrajectory.gameObject.SetActive(false);
+        greyTrajectory.gameObject.SetActive(false);
+        blueTrajectory.transform.position = transform.position;
+        greyTrajectory.transform.position = transform.position;
+
+        showInfo = true;
+    }
+
+    private MovementData CalculateVariables(Vector3 contactPoint, Transform transform)
+    {
+        MovementData mData = new MovementData();
+        float totalTime = 0.35f / strength.value;
+
+        mData.velocity = (_blueTarget.position - transform.position - (gravity * Mathf.Pow(totalTime, 2)) / 2.0f) / totalTime;
+
+        impactVect = (contactPoint - transform.position).normalized;
+        angularMomentum = Vector3.Cross(impactVect, mData.velocity.normalized);
+        mData.angularVel = angularMomentum * (effectStrength.value * -1);
+
+        return mData;
+    }
+
+    private Vector3 CalculateMagnusForce(Vector3 angularVel)
+    {
+        return airDensity * freeStream * Mathf.Pow((2.0f * Mathf.PI * 0.25f), 2) * 1.0f * angularVel;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         _myOctopus.NotifyShoot();
+        acceleration = Vector3.zero;
         ballShot = true;
 
-        startingVelocity = (_blueTarget.position - transform.position).normalized;
-        velocity = startingVelocity * strength.value;
-        impactVect = (collision.contacts[0].point - transform.position).normalized;
-        angularMomentum = Vector3.Cross(impactVect, startingVelocity);
-
-        angularVelocity = angularMomentum * (effectStrength.value * -1);
+        MovementData data = CalculateVariables(collision.contacts[0].point, transform);
+        velocity = data.velocity;
+        angularVelocity = data.angularVel;
 
         rotationVelocityText.text = "Rotation velocity: " + angularVelocity.ToString("F2");
     }
 }
+

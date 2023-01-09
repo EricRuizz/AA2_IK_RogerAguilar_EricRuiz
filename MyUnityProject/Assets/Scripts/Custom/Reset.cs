@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Reseti : MonoBehaviour
+public class Reset : MonoBehaviour
 {
     [SerializeField] private Transform ball;
     [SerializeField] private Transform scorpion;
