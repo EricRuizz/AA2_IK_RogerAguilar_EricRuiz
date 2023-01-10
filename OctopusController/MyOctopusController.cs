@@ -46,11 +46,7 @@ namespace OctopusController
 
         public void TestLogging(string objectName)
         {
-
-
             Debug.Log("hello, I am initializing my Octopus Controller in object " + objectName);
-
-
         }
 
         public void Init(Transform[] tentacleRoots, Transform[] randomTargets)
@@ -76,11 +72,10 @@ namespace OctopusController
 
             _randomTargets = randomTargets;
             //TODO: use the regions however you need to make sure each tentacle stays in its region
-
         }
 
 
-        public void NotifyTarget(Transform target, Transform region)
+        public void NotifyTarget(Transform target, Transform region) //region as targets final position
         {
             _currentRegion = region;
             _target = target;
@@ -90,7 +85,7 @@ namespace OctopusController
                 float lastDistance = 0.0f;
                 for (int i = 0; i < _tentacles.Length; i++)
                 {
-                    if ((target.position - _tentacles[i].Bones[_tentacles[i].Bones.Length - 1].position).magnitude > lastDistance)
+                    if ((region.position - _tentacles[i].Bones[_tentacles[i].Bones.Length - 1].position).magnitude < lastDistance)
                     {
                         closestTentacle = i;
                     }
@@ -170,11 +165,13 @@ namespace OctopusController
                             theta = theta % Math.PI;
                             theta *= sin > 0 ? 1 : -1;
 
-                            if(theta > 0.01f)
+                            if(theta > 0.025f)
                             {
-                                _tentacles[i].Bones[j].rotation *= Quaternion.AngleAxis((float)theta * Mathf.Rad2Deg, axis);
+                                //_tentacles[i].Bones[j].rotation *= Quaternion.AngleAxis((float)theta * Mathf.Rad2Deg, axis);
                                 _tentacles[i].Bones[j].Rotate(axis, (float)theta * Mathf.Rad2Deg, Space.World);
                             }
+
+                            _tentacles[i].Bones[j].localRotation = GetSwing(_tentacles[i].Bones[j].localRotation);
                         }
 
                         tries[i]++;
@@ -201,14 +198,43 @@ namespace OctopusController
         }
 
 
+        public Quaternion GetTwist(Quaternion rot)
+        {
+            //todo: change the return value for exercise 3
+            return GetSwing(rot) * CalculateTwist(rot);
+        }
+
+        private Quaternion CalculateTwist(Quaternion rot)
+        {
+            Quaternion qt;
+            qt.x = 0;
+            qt.y = rot.y;
+            qt.z = 0;
+            qt.w = rot.w;
+            return qt.normalized;
+        }
+        public Quaternion GetSwing(Quaternion rot)
+        {
+            //todo: change the return value for exercise 3
+            //return totalRotation * (rot * Quaternion.Inverse(CalculateTwist(rot)));
+
+            rot = new Quaternion(rot.x, Mathf.Clamp(rot.y, 0.0f, 1.0f), Mathf.Clamp(rot.z, 0.0f, 10.0f), rot.w);
+
+            Quaternion invertedRotation = new Quaternion(0f, rot.y, 0f, rot.w).normalized; // twist is in the Y axis
+
+            invertedRotation = Quaternion.Inverse(invertedRotation);
+
+
+            Quaternion qSwing = rot * invertedRotation;
+
+            float angle;
+            Vector3 axis;
+            qSwing.ToAngleAxis(out angle, out axis);
+
+            return Quaternion.AngleAxis(Mathf.Clamp(angle, 0.0f, _swingMax), axis);
+        }
 
 
         #endregion
-
-
-
-
-
-
     }
 }

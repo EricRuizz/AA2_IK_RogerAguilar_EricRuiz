@@ -25,6 +25,9 @@ namespace OctopusController
 
         Vector3[] axis;
         Vector3[] startOffsets;
+
+        float magnusEffectDir;
+        float shootingStrength;
         //////
 
         //LEGS
@@ -52,12 +55,15 @@ namespace OctopusController
             legTargets = LegTargets;
             legFutureBases = LegFutureBases;
 
-            maxLegDistance = 1.0f;
+            maxLegDistance = 0.5f;
 
             moveLeg = new bool[LegRoots.Length];
             legLerpTParam = new float[LegRoots.Length];
             lerpInitPos = new Vector3[LegRoots.Length];
             lerpFinalPos = new Vector3[LegRoots.Length];
+
+            magnusEffectDir = 0.0f;
+            shootingStrength = 0.0f;
 
             //Legs init
             for (int i = 0; i < LegRoots.Length; i++)
@@ -115,18 +121,11 @@ namespace OctopusController
                 }
 
                 //startOffsets[i] = _tail.Bones[i].localPosition;
-
-                Debug.Log(tailSolutions[i]);
             }
 
             for (int i = 0; i < _tail.Bones.Length - 1; i++)
             {
                 startOffsets[i] = Quaternion.Inverse(_tail.Bones[i].rotation) * (_tail.Bones[i + 1].position - _tail.Bones[i].position);
-            }
-
-            for (int i = 0; i < _tail.Bones.Length; i++)
-            {
-                Debug.Log(startOffsets[i]);
             }
         }
 
@@ -134,6 +133,12 @@ namespace OctopusController
         public void NotifyTailTarget(Transform target)
         {
             tailTarget = target;
+        }
+
+        public void UpdateSliderValues(float magnusEffect, float strength)
+        {
+            magnusEffectDir = magnusEffect;
+            shootingStrength = strength;
         }
 
         //TODO: Notifies the start of the walking animation
@@ -146,7 +151,7 @@ namespace OctopusController
 
         public void UpdateIK()
         {
-            if (DistanceFromTarget(tailTarget.position, tailSolutions) < 5.0f)
+            if (DistanceFromTarget(tailTarget.position, tailSolutions) < 1.0f)
             {
                 updateTail();
             }
@@ -264,8 +269,9 @@ namespace OctopusController
                     else
                     {
                         _legs[i].Bones[0].position = lerpInitPos[i] + ((lerpFinalPos[i] - lerpInitPos[i]) * (legLerpTParam[i]));
-                        legLerpTParam[i] = legLerpTParam[i] + (Time.deltaTime * 10.0f);
-                        Debug.Log(legLerpTParam[i]);
+                        _legs[i].Bones[0].position += Vector3.up * Mathf.Pow(Mathf.Sin(legLerpTParam[i] * Mathf.PI), 2.0f) * 0.5f;
+
+                        legLerpTParam[i] = legLerpTParam[i] + (Time.deltaTime * 7.5f);
                     }
                 }
             }
@@ -277,7 +283,7 @@ namespace OctopusController
         {
             if (DistanceFromTarget(tailTarget.position, tailSolutions) > stopThreshold)
             {
-                ApproachTarget(tailTarget.position);
+                ApproachTarget(new Vector3((magnusEffectDir * -0.5f), 0.0f, 0.0f) + tailTarget.position);
             }
         }
 
@@ -287,7 +293,7 @@ namespace OctopusController
             {
                 float gradient = CalculateGradient(target, tailSolutions, i, learningRate);
                 //tailSolutions[i] = tailSolutions[i] - gradient;
-                tailSolutions[i] -= 10.0f * gradient;
+                tailSolutions[i] -= 100.0f * shootingStrength * gradient;
                 _tail.Bones[i].localRotation = Quaternion.Euler(tailSolutions[i] * axis[i]);
                 //_tail.Bones[i].Rotate(axis[i] * tailSolutions[i]);
 
@@ -324,7 +330,7 @@ namespace OctopusController
             {
                 rotation *= Quaternion.AngleAxis(solutions[i - 1], axis[i - 1]);
                 Vector3 nextPoint = prevPoint + rotation * startOffsets[i-1];
-                Debug.DrawLine(prevPoint, nextPoint);
+                //Debug.DrawLine(prevPoint, nextPoint);
                 prevPoint = nextPoint;
             }
 
