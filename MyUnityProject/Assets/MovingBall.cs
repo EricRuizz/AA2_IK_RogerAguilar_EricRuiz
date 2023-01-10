@@ -37,9 +37,17 @@ public class MovingBall : MonoBehaviour
 
     [SerializeField] Text rotationVelocityText;
 
-    [SerializeField] Transform blueTrajectory;
-    [SerializeField] Transform greyTrajectory;
+    [SerializeField] GameObject blueSpherePrefab;
+    [SerializeField] GameObject greySpherePrefab;
     [SerializeField] Transform scorpionEndEffector;
+
+    [Header("ARROWS")]
+    [SerializeField] Transform greenArrow;
+    [SerializeField] List<Transform> redArrows = new List<Transform>();
+    [SerializeField] Transform greyArrow;
+
+    private List<GameObject> blueTrajectory = new List<GameObject>();
+    private List<GameObject> greyTrajectory = new List<GameObject>();
 
     Vector3 velocity;
     Vector3 acceleration;
@@ -55,6 +63,7 @@ public class MovingBall : MonoBehaviour
     float freeStream;
 
     int steps;
+    bool showTrajectory;
     bool showInfo;
     //
 
@@ -67,10 +76,14 @@ public class MovingBall : MonoBehaviour
 
         steps = 20;
         showInfo = true;
+        showTrajectory = true;
         ballShot = false;
 
-        blueTrajectory.transform.position = transform.position;
-        greyTrajectory.transform.position = transform.position;
+        for (int i = 0; i < steps; i++)
+        {
+            greyTrajectory.Add(Instantiate(greySpherePrefab, transform.position, Quaternion.identity));
+            blueTrajectory.Add(Instantiate(blueSpherePrefab, transform.position, Quaternion.identity));
+        }
     }
 
     // Update is called once per frame
@@ -86,6 +99,35 @@ public class MovingBall : MonoBehaviour
         //update the position
         transform.position = transform.position + new Vector3(-horizontalInput * _movementSpeed * Time.deltaTime, verticalInput * _movementSpeed * Time.deltaTime, 0);
         
+        if(showInfo && !ballShot)
+        {
+            float totalTime = 0.35f / strength.value;
+            float stepTime = totalTime / steps;
+
+            Vector3 contactPoint = (scorpionEndEffector.position - transform.position).normalized * transform.gameObject.GetComponent<SphereCollider>().radius;
+
+            MovementData data = CalculateVariables(contactPoint, transform);
+            Vector3 simVelocity = data.velocity;
+            Vector3 simAngularVel = data.angularVel;
+            Vector3 simMagnus =  CalculateMagnusForce(simAngularVel);
+
+            redArrows[0].position = transform.position;
+            redArrows[0].LookAt(gravity.normalized + transform.position);
+
+            redArrows[1].position = transform.position;
+            redArrows[1].LookAt(simMagnus.normalized + transform.position);
+            //redArrows[1].rotation = Quaternion.LookRotation(simMagnus.normalized);
+
+            greyArrow.position = transform.position;
+            greyArrow.LookAt(simVelocity.normalized + transform.position);
+            //greyArrow.rotation = Quaternion.LookRotation(simVelocity.normalized);
+
+            greyArrow.gameObject.SetActive(true);
+            redArrows[0].gameObject.SetActive(true);
+            redArrows[1].gameObject.SetActive(true);
+            greenArrow.gameObject.SetActive(false);
+        }
+
         if (ballShot)
         {
             Vector3 magnusForce = CalculateMagnusForce(angularVelocity);
@@ -93,39 +135,52 @@ public class MovingBall : MonoBehaviour
             transform.position += velocity * Time.deltaTime;
             velocity += acceleration * Time.deltaTime;
             acceleration = gravity + magnusForce;
+
+            if(showInfo)
+            {
+                greenArrow.gameObject.SetActive(true);
+                greenArrow.position = transform.position;
+                greenArrow.LookAt(velocity.normalized + transform.position);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.I))
         {
             showInfo = !showInfo;
 
-            if(showInfo)
+            if(!showInfo)
             {
-                blueTrajectory.transform.position = transform.position;
-                greyTrajectory.transform.position = transform.position;
+                for (int i = 0; i < steps; i++)
+                {
+                    greyTrajectory[i].SetActive(false);
+                    blueTrajectory[i].SetActive(false);
+                }
 
-                blueTrajectory.gameObject.SetActive(true);
-                greyTrajectory.gameObject.SetActive(true);
+                greyArrow.gameObject.SetActive(false);
+                redArrows[0].gameObject.SetActive(false);
+                redArrows[1].gameObject.SetActive(false);
+                greenArrow.gameObject.SetActive(false);
+                StopCoroutine(ComputeTrajectory());
             }
             else
             {
-                blueTrajectory.gameObject.SetActive(false);
-                greyTrajectory.gameObject.SetActive(false);
+                for (int i = 0; i < steps; i++)
+                {
+                    greyTrajectory[i].SetActive(true);
+                    blueTrajectory[i].SetActive(true);
+                }
             }
         }
 
-        if(showInfo && !ballShot)
+        if(showInfo && showTrajectory && !ballShot)
         {
-            showInfo = false;
+            showTrajectory = false;
             StartCoroutine(ComputeTrajectory());
         }
     }
 
     IEnumerator ComputeTrajectory()
     {
-        blueTrajectory.gameObject.SetActive(true);
-        greyTrajectory.gameObject.SetActive(true);
-
         float totalTime = 0.35f / strength.value;
         float stepTime = totalTime / steps;
 
@@ -134,37 +189,35 @@ public class MovingBall : MonoBehaviour
         Vector3 contactPoint = (scorpionEndEffector.position - transform.position).normalized * transform.gameObject.GetComponent<SphereCollider>().radius;
         Vector3 simBlueAngularVel = Vector3.zero;
 
-        MovementData data = CalculateVariables(contactPoint, greyTrajectory);
+        MovementData data = CalculateVariables(contactPoint, transform);
         simBlueVelocity = data.velocity;
         simBlueAngularVel = data.angularVel;
-
-        Debug.Log(" AAA       " + data.velocity);
-        Debug.Log(" VVV       " + simBlueVelocity);
 
         Vector3 simGreyVelocity = simBlueVelocity;
         Vector3 simGreyAcceleration = Vector3.zero;
 
+        Vector3 bluePos = transform.position;
+        Vector3 greyPos = transform.position;
+
         for (int i = 0; i < steps; i++)
         {
-            greyTrajectory.position += simGreyVelocity * stepTime;
+            greyPos += simGreyVelocity * stepTime;
             simGreyVelocity += simGreyAcceleration * stepTime;
             simGreyAcceleration = gravity;
 
-            blueTrajectory.position += simBlueVelocity * stepTime;
+            bluePos += simBlueVelocity * stepTime;
             simBlueVelocity += simBlueAcceleration * stepTime;
             simBlueAcceleration = gravity + CalculateMagnusForce(simBlueAngularVel);
+
+            greyTrajectory[i].transform.position = greyPos;
+            blueTrajectory[i].transform.position = bluePos;
+
             yield return null;
 
         }
-
         yield return new WaitForSeconds(0.7f);
 
-        blueTrajectory.gameObject.SetActive(false);
-        greyTrajectory.gameObject.SetActive(false);
-        blueTrajectory.transform.position = transform.position;
-        greyTrajectory.transform.position = transform.position;
-
-        showInfo = true;
+        showTrajectory = true;
     }
 
     private MovementData CalculateVariables(Vector3 contactPoint, Transform transform)
