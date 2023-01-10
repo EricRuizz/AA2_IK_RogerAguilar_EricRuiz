@@ -55,7 +55,7 @@ namespace OctopusController
             legTargets = LegTargets;
             legFutureBases = LegFutureBases;
 
-            maxLegDistance = 0.75f;
+            maxLegDistance = 0.5f;
 
             moveLeg = new bool[LegRoots.Length];
             legLerpTParam = new float[LegRoots.Length];

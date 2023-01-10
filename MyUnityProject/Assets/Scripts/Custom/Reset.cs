@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Reseti : MonoBehaviour
+public class Reset : MonoBehaviour
 {
     [SerializeField] private Transform ball;
     [SerializeField] private Transform scorpion;
@@ -20,6 +20,8 @@ public class Reseti : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.R))
         {
+            ball.GetComponent<MovingBall>().ballShot = false;
+
             ball.position = ballPos;
             scorpion.position = scorpionPos;
         }
