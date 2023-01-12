@@ -86,7 +86,7 @@ public class IK_Scorpion : MonoBehaviour
         {
             if(strenghtGoingUp)
             {
-                strengthSlider.GetComponent<UnityEngine.UI.Slider>().value += Time.deltaTime;
+                strengthSlider.GetComponent<UnityEngine.UI.Slider>().value += Time.deltaTime * 0.5f;
                 if(strengthSlider.GetComponent<UnityEngine.UI.Slider>().value >= strengthSlider.GetComponent<UnityEngine.UI.Slider>().maxValue)
                 {
                     strenghtGoingUp = false;
@@ -94,7 +94,7 @@ public class IK_Scorpion : MonoBehaviour
             }
             else
             {
-                strengthSlider.GetComponent<UnityEngine.UI.Slider>().value -= Time.deltaTime;
+                strengthSlider.GetComponent<UnityEngine.UI.Slider>().value -= Time.deltaTime * 0.5f;
                 if (strengthSlider.GetComponent<UnityEngine.UI.Slider>().value <= strengthSlider.GetComponent<UnityEngine.UI.Slider>().minValue)
                 {
                     strenghtGoingUp = true;
