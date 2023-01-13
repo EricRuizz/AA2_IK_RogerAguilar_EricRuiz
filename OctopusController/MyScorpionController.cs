@@ -293,7 +293,7 @@ namespace OctopusController
             {
                 float gradient = CalculateGradient(target, tailSolutions, i, learningRate);
                 //tailSolutions[i] = tailSolutions[i] - gradient;
-                tailSolutions[i] -= 100.0f * shootingStrength * gradient;
+                tailSolutions[i] -= 100.0f * shootingStrength * gradient + NewErrorFunction(i) / 20.0f;
                 _tail.Bones[i].localRotation = Quaternion.Euler(tailSolutions[i] * axis[i]);
                 //_tail.Bones[i].Rotate(axis[i] * tailSolutions[i]);
 
@@ -335,6 +335,12 @@ namespace OctopusController
             }
 
             return prevPoint;
+        }
+
+        private float NewErrorFunction(int i)
+        {
+            //return Vector3.Dot(new Vector3(0.0f, -1.0f, 0.0f), _tail.Bones[i].forward);
+            return Vector3.Dot(new Vector3(0.0f, -1.0f, 0.0f), _tail.Bones[_tail.Bones.Length - 1].forward - _tail.Bones[_tail.Bones.Length - 2].forward);
         }
 
         #endregion
